@@ -1,0 +1,9 @@
+h1, div.inputBox, p {
+    text-align: center;
+  }
+
+.tile {
+    color: gray;
+    border: 2px solid;
+    font-size: 20px;
+}
