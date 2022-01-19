@@ -2,9 +2,11 @@
 <p>Enter letters to get suggestions for Wrods</p>
 
 <div class="inputBox">
-  <input class="tile" type="text" maxlength="1" size="1">
-  <input class="tile" type="text" maxlength="1" size="1">
-  <input class="tile" type="text" maxlength="1" size="1">
-  <input class="tile" type="text" maxlength="1" size="1">
-  <input class="tile" type="text" maxlength="1" size="1">
+  <input class="tile" #input1 (keyup)="(input1.value.length == 1) ? input2.focus() : ''" type="text" maxlength="1" size="1">
+  <input class="tile" #input2 (keyup)="(input2.value.length == 1) ? input3.focus() : ''" type="text" maxlength="1" size="1">
+  <input class="tile" #input3 (keyup)="(input3.value.length == 1) ? input4.focus() : ''" type="text" maxlength="1" size="1">
+  <input class="tile" #input4 (keyup)="(input4.value.length == 1) ? input5.focus() : ''" type="text" maxlength="1" size="1">
+  <input [(ngModel)]="box5" class="tile" #input5 (keyup)="(input5.value.length == 1) ? submit.focus() : ''" type="text" maxlength="1" size="1">
+  <button #submit type="submit" (click)="SubmitText()" >Submit</button>
+
 </div>

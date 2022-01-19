@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'WordleHelper';
+  box5: string = '';
+
+  SubmitText():void{
+    console.log('Here we go');
+    console.log(this.box5)
+  }
+  
 }

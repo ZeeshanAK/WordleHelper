@@ -6,4 +6,7 @@ h1, div.inputBox, p {
     color: gray;
     border: 2px solid;
     font-size: 20px;
+    text-transform:uppercase;
+    text-align: center;
+    margin: 8px;
 }
