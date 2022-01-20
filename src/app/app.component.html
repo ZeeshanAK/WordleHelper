@@ -1,12 +1,30 @@
-<h1>Wordle Helper</h1>
+<!-- <button (click)="toggleDarkTheme()">Toggle dark theme</button> -->
+<h1>Wordle Helper</h1> 
 <p>Enter letters to get suggestions for Wrods</p>
 
-<div class="inputBox">
-  <input [(ngModel)]="box1" id="box1" class="tile" #input1 (keyup)="crazy($event, input1)" (keyup)="(input1.value.length == 1) ? input2.focus() : ''" type="text" maxlength="1" size="1">
-  <input [(ngModel)]="box2" id="box2"   class="tile" #input2  (keyup)="crazy($event,input2)" (keyup)="(input2.value.length == 1) ? input3.focus() : ''" type="text" maxlength="1" size="1">
-  <input [(ngModel)]="box3" id="box3"   class="tile" #input3  (keyup)="crazy($event,input3)" (keyup)="(input3.value.length == 1) ? input4.focus() : ''" type="text" maxlength="1" size="1">
-  <input [(ngModel)]="box4" id="box4"   class="tile" #input4  (keyup)="crazy($event,input4)" (keyup)="(input4.value.length == 1) ? input5.focus() : ''" type="text" maxlength="1" size="1">
-  <input [(ngModel)]="box5" id="box5"  class="tile" #input5  (keyup)="crazy($event, input5)" (keyup)="(input5.value.length == 1) ? input5.focus() : ''" type="text" maxlength="1" size="1">
-  <button #submit type="submit" (click)="SubmitText()" >Submit</button>
+<p>
+  <mat-form-field appearance="outline">
+    <mat-label>Enter you word here</mat-label>
+    <input [(ngModel)]="letter"  (input)="CreateLetters($event)" matInput placeholder="CRAZY">
+  </mat-form-field>
+</p>
 
+<div *ngIf="letters.length > 0" class="center">
+  <mat-card class="chips-card">
+    <mat-chip-list aria-label="Fish selection">
+      <mat-chip class="no-wrap" *ngFor="let word of letters">{{word}}</mat-chip>
+    </mat-chip-list>
+  </mat-card>
+  
 </div>
+
+
+<div class="center">
+  <mat-card class="chips-card">
+    <mat-chip-list aria-label="Fish selection">
+      <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{word}}</mat-chip>
+    </mat-chip-list>
+  </mat-card>
+  
+</div>
+

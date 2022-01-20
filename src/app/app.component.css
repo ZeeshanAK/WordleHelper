@@ -12,3 +12,13 @@ h1, div.inputBox, p {
     text-align: center;
     margin: 8px;
 }
+
+.chips-card {
+  max-width: 400px;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
