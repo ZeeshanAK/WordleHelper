@@ -20,5 +20,16 @@ h1, div.inputBox, p {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px;
 }
+
+.letter{
+  margin-bottom: 50px;
+}
+
+.footer{ 
+       position: fixed;     
+       text-align: center;    
+       bottom: 0px; 
+       width: 100%;
+       margin-bottom: auto;
+   } 

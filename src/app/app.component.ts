@@ -7,7 +7,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 })
 export class AppComponent {
   title = 'WordleHelper';
-  filteredWords = ['Here', 'We', 'Go', 'Kids', 'Move', 'To', 'The', 'Group',];
+  filteredWords = ['Here', 'We', 'Go', 'Kids', 'Move', 'To', 'The', 'Group','....', 'Dummy' ,'List', 'For', 'Now'];
   letters : string[] = [];
   letter:string = '';
 
