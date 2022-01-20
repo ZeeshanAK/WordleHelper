@@ -1,11 +1,13 @@
 h1, div.inputBox, p {
     text-align: center;
+    margin-top: 15px;
   }
 
 .tile {
-    color: gray;
+    color: black;
     border: 2px solid;
     font-size: 20px;
+    font-weight: bold;
     text-transform:uppercase;
     text-align: center;
     margin: 8px;

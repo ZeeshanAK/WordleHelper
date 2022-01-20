@@ -42,45 +42,42 @@ export class AppComponent {
     console.log(letter);
     //console.log(input5.letter);
   }
-  crazy(event:any, ele:any): void {
-    switch(ele.id) { 
-      case 'box1': { 
-         if(event.key =="Backspace"){
+  crazy(event: any, ele: any): void {
+    switch (ele.id) {
+      case 'box1': {
+        if (event.key == 'Backspace') {
           this.input1.nativeElement.focus();
-         } 
-         break; 
-      } 
-      case 'box2': { 
-        if(event.key =="Backspace"){
+        }
+        break;
+      }
+      case 'box2': {
+        if (event.key == 'Backspace') {
           this.input1.nativeElement.focus();
-         } 
-         break; 
-      } 
-      case 'box3': { 
-        if(event.key =="Backspace"){
+        }
+        break;
+      }
+      case 'box3': {
+        if (event.key == 'Backspace') {
           this.input2.nativeElement.focus();
-         } 
-         break; 
-      } 
-      case 'box4': { 
-        if(event.key =="Backspace"){
+        }
+        break;
+      }
+      case 'box4': {
+        if (event.key == 'Backspace') {
           this.input3.nativeElement.focus();
-         } 
-         break; 
-      } 
-      case 'box5': { 
-        if(event.key =="Backspace"){
+        }
+        break;
+      }
+      case 'box5': {
+        if (event.key == 'Backspace') {
           this.input4.nativeElement.focus();
-         } 
-         break; 
-      } 
-      default: { 
-         //statements; 
-         break; 
-      } 
-   } 
-
-    console.log(event);
-    console.log(ele.id);
+        }
+        break;
+      }
+      default: {
+        //statements;
+        break;
+      }
+    }
   }
 }
