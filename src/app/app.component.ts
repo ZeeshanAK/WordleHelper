@@ -7,7 +7,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 })
 export class AppComponent {
   title = 'WordleHelper';
-  filteredWords = ['Here', 'We', 'Go', 'Kids', 'Move', 'To', 'The', 'Group','....', 'Dummy' ,'List', 'For', 'Now'];
+  filteredWords = ['crazy', 'crbzy', 'csira', 'arise', 'arose', 'arrrr', 'happy', 'ppahy','....', 'Dummy' ,'List', 'For', 'Now'];
   letters : string[] = [];
   letter:string = '';
   colors =['dark','yellow','green',];
@@ -40,10 +40,12 @@ export class AppComponent {
         break;
 
     }
+    let regString: string = 'c\\w\\wz\\w';
+    let re = new RegExp(regString);
+
+    this.filteredWords = this.filteredWords.filter((letter) => re.test(letter));
+ 
+  }
 
 
-
-
-
-    el.currentTarget.classList.add('mat-chip-green')  }
 }
