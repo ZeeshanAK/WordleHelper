@@ -1,16 +1,18 @@
-h1, div.inputBox, p {
-    text-align: center;
-    margin-top: 15px;
-  }
+h1,
+div.inputBox,
+p {
+  text-align: center;
+  margin-top: 15px;
+}
 
 .tile {
-    color: black;
-    border: 2px solid;
-    font-size: 20px;
-    font-weight: bold;
-    text-transform:uppercase;
-    text-align: center;
-    margin: 8px;
+  color: black;
+  border: 2px solid;
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 8px;
 }
 
 .chips-card {
@@ -22,14 +24,29 @@ h1, div.inputBox, p {
   align-items: center;
 }
 
-.letter{
+.letter {
   margin-bottom: 50px;
 }
 
-.footer{ 
-       position: fixed;     
-       text-align: center;    
-       bottom: 0px; 
-       width: 100%;
-       margin-bottom: auto;
-   } 
+.footer {
+  position: fixed;
+  text-align: center;
+  bottom: 0px;
+  width: 100%;
+  margin-bottom: auto;
+}
+
+.mat-chip-green {
+  background-color: #15cf15;
+  color: #fff;
+}
+
+.mat-chip-yellow {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.mat-chip-dark {
+  background-color: #374b37;
+  color: #fff;
+}
