@@ -7,7 +7,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 })
 export class AppComponent {
   title = 'WordleHelper';
-  filteredWords = ['crazy', 'crbzy', 'csira', 'arise', 'arose', 'arrrr', 'happy', 'ppahy','....', 'Dummy' ,'List', 'For', 'Now'];
+  filteredWords = ['crazy', 'crbzy', 'crazyyyy', 'arise', 'aroseeee', 'arrrr', 'happy', 'ppahyyyyyy','....', 'Dummy' ,'List', 'For', 'Now'];
   letters : string[] = [];
   letter:string = '';
   colors =['dark','yellow','green',];
@@ -43,7 +43,10 @@ export class AppComponent {
     let regString: string = 'c\\w\\wz\\w';
     let re = new RegExp(regString);
 
-    this.filteredWords = this.filteredWords.filter((letter) => re.test(letter));
+    // 1st filter - get only those letter whose length matches with what user typed
+    this.filteredWords = this.filteredWords.filter((letter) => letter.length == this.letter.length);
+
+    // this.filteredWords = this.filteredWords.filter((letter) => re.test(letter));
  
   }
 
