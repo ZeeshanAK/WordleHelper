@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Letters } from './Letter';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -7,22 +8,17 @@ import { Letters } from './Letter';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+
+  constructor(private http: HttpClient) { }
+  ngOnInit(): void {
+    this.http.get("https://raw.githubusercontent.com/ZeeshanAK/english-words/master/words_alpha.txt",{ responseType: 'text' as 'json'}).subscribe(data => {
+      console.log(data);
+      this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
+      // this.filteredWordsOrignal = [data].split(/\r?\n/);
+  })
+  }
   title = 'WordleHelper';
-  filteredWordsOrignal = [
-    'crazy',
-    'crbzy',
-    'crazyyyy',
-    'arise',
-    'arose',
-    'arrrr',
-    'happy',
-    'ppahyyyyyy',
-    '....',
-    'Dummy',
-    'Lists',
-    'For',
-    'Now',
-  ];
+  filteredWordsOrignal: string[] = [];
   filteredWords: string[] = [];
 
 
@@ -39,6 +35,9 @@ export class AppComponent {
   }
 
   changeColor(el: any, index:number): void {
+
+    
+
     let color = this.letters[index].color;
 
     switch (color) {
