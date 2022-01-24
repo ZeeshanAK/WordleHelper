@@ -19,7 +19,7 @@
 </div>
 
 
-<div class="center">
+<div *ngIf="filteredWords.length > 0" class="center">
   <mat-card class="chips-card">
     <mat-card-subtitle>Filtered Suggestions</mat-card-subtitle>
     <mat-chip-list aria-label="Fish selection">
