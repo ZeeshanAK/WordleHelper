@@ -11,7 +11,8 @@
 <div *ngIf="letters.length > 0" class="center">
   <mat-card class="chips-card letter">
     <mat-chip-list aria-label="Fish selection">
-      <mat-chip [attr.data-color]="colors[0]" class="no-wrap mat-chip-dark" (click)="changeColor($event)"  *ngFor="let word of letters">{{word}}</mat-chip>
+      <mat-chip [attr.data-color]="colors[0]" class="no-wrap mat-chip-dark" (click)="changeColor($event, i)" 
+       *ngFor="let word of letters; let i = index">{{word.letter}}</mat-chip>
     </mat-chip-list>
   </mat-card>
   
