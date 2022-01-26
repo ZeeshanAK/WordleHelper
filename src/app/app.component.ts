@@ -36,7 +36,10 @@ export class AppComponent {
 
   changeColor(el: any, index:number): void {
 
-    
+    if(this.filteredWordsOrignal.length == 0){
+      alert('Cannot fetch words right now. Please check back in a while. Thanks!')
+return ;
+    }
 
     let color = this.letters[index].color;
 
