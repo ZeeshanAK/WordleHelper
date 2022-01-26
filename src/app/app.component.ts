@@ -1,6 +1,8 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, Inject } from '@angular/core';
 import { Letters } from './Letter';
 import { HttpClient } from '@angular/common/http';
+import { Notyf } from 'notyf';
+import { NOTYF } from './notyf.token';
 
 @Component({
   selector: 'app-root',
@@ -8,37 +10,38 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, @Inject(NOTYF) private notyf: Notyf) {}
   ngOnInit(): void {
-    this.http.get("https://raw.githubusercontent.com/ZeeshanAK/english-words/master/words_alpha.txt",{ responseType: 'text' as 'json'}).subscribe(data => {
-      console.log(data);
-      this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
-      // this.filteredWordsOrignal = [data].split(/\r?\n/);
-  })
+    this.http
+      .get(
+        'https://raw.githubusercontent.com/ZeeshanAK/english-words/master/words_alpha.txt',
+        { responseType: 'text' as 'json' }
+      )
+      .subscribe((data) => {
+        this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
+      });
   }
   title = 'WordleHelper';
   filteredWordsOrignal: string[] = [];
   filteredWords: string[] = [];
-
 
   letters: Letters[] = [];
   letter: string = '';
   colors = ['dark', 'yellow', 'green'];
 
   CreateLetters(el: any): void {
-    console.log(this.letter);
     this.letters = [];
     [...this.letter].forEach((element) => {
       this.letters.push(new Letters(element, 'dark'));
     });
   }
 
-  changeColor(el: any, index:number): void {
-
-    if(this.filteredWordsOrignal.length == 0){
-      alert('Cannot fetch words right now. Please check back in a while. Thanks!')
-return ;
+  changeColor(el: any, index: number): void {
+    if (this.filteredWordsOrignal.length == 0) {
+      this.notyf.error(
+        'Cannot fetch words right now. Please check back in a while. Thanks!'
+      );
+      return;
     }
 
     let color = this.letters[index].color;
@@ -67,7 +70,6 @@ return ;
       (letter) => letter.length == this.letter.length
     );
 
-
     // 2nd filter apply regex for Green and yellow letters
     let regString: string = '';
     [...this.letters].forEach((element) => {
@@ -82,9 +84,6 @@ return ;
 
     this.filteredWords = this.filteredWords.filter((letter) => re.test(letter));
 
-
-
-    
     // 3rd  filter - Exclude words that shouldn't contain x y z letters
     let excludedLetter = this.letters
       .filter(function (el) {

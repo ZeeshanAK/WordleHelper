@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModules } from './material.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NOTYF, notyfFactory } from './notyf.token';
 
 
 @NgModule({
@@ -19,7 +20,9 @@ import { HttpClientModule } from '@angular/common/http';
     MaterialModules,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [
+    { provide: NOTYF, useFactory: notyfFactory }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
