@@ -5,10 +5,6 @@ const setEnv = () => {
   const targetPath = './src/environments/environment.ts';
 // Load node modules
   const colors = require('colors');
-  const appVersion = require('../../package.json').version;
-  require('dotenv').config({
-    path: 'src/environments/.env'
-  });
 // `environment.ts` file structure
   const envConfigFile = `export const environment = {
     ping: '${process.env.ping}',
