@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  ping:''
+  ping:process.env.ping
 };
