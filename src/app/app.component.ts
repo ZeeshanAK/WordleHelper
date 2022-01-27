@@ -3,6 +3,7 @@ import { Letters } from './Letter';
 import { HttpClient } from '@angular/common/http';
 import { Notyf } from 'notyf';
 import { NOTYF } from './notyf.token';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent {
       .subscribe((data) => {
         this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
       });
+      console.log(environment.ping);
   }
   title = 'WordleHelper';
   filteredWordsOrignal: string[] = [];
