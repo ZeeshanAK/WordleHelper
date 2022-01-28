@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Notyf } from 'notyf';
 import { NOTYF } from './notyf.token';
 import { environment } from 'src/environments/environment';
+import { domainToASCII } from 'url';
 
 @Component({
   selector: 'app-root',
@@ -73,14 +74,64 @@ export class AppComponent {
     );
 
     // 2nd filter apply regex for Green and yellow letters
+    let yellowString: string = '';
     let regString: string = '';
-    [...this.letters].forEach((element) => {
-      if (element.color == 'green') {
-        regString += element.letter;
-      } else if (element.color == 'yellow') {
-        regString += '\\w';
-      }
-    });
+    // [...this.letters].forEach((element) => {
+    //   if (element.color == 'green') {
+    //     regString += element.letter;
+    //   } else if (element.color == 'yellow') {
+    //     regString += '\\w';
+    //   }
+    // });
+
+    //filter 2a
+
+    let yellowLetters = this.letters
+      .filter(function (el) {
+        return el.color == 'yellow';
+      })
+      .map((a) => a.letter);
+    let greenLetters = this.letters
+      .filter(function (el) {
+        return el.color == 'green';
+      })
+      .map((a) => a.letter);
+
+      [...yellowLetters].forEach((element) => yellowString += `(?=.*${element})`);
+ // [...this.letters].forEach((element) => {
+    //   if (element.color == 'green') {
+    //     regString += element.letter;
+    //   } else if (element.color == 'yellow') {
+    //     regString += '\\w';
+    //   }
+    // });
+
+
+      yellowString += '.+'
+
+
+      let yellos = new RegExp(yellowString);
+
+      this.filteredWords = this.filteredWords.filter((letter) => yellos.test(letter));
+
+
+    for(let i = 0; i <this.letters.length; i++ ){
+      if (this.letters[i].color == 'green') {
+        if(((i -1) >=0) &&  this.letters[i].color == 'green'){
+          regString += `${this.letters[i].letter}`;
+        } else{
+          regString += `${this.getDots(i)}${this.letters[i].letter}`;
+        }
+      } 
+      // else if (this.letters[i].color == 'yellow') {
+      //   if(((i -1) >=0) &&  this.letters[i].color == 'yellow'){
+      //     regString += `${this.letters[i].letter}`;
+      //   } else{
+      //     regString += `${this.getDots(i)}${this.letters[i].letter}`;
+      //   }
+
+      // }
+    }
 
     let re = new RegExp(regString);
 
@@ -98,5 +149,15 @@ export class AppComponent {
         (letter) => !letter.includes(excludedLetter[i])
       );
     }
+  }
+  getDots(count:number): string{
+    if(count == 0){
+      return '^'
+    }
+     let dots: string = '';
+    for (var i = 0; i < count; i++) {
+      dots += '.';
+    }
+    return dots;
   }
 }
