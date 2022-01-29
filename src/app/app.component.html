@@ -24,10 +24,11 @@
     </mat-chip-list>
   </mat-card>
 </div>
-
-<div *ngIf="filteredWords.length > 0" class="center">
+<div class="center">
+<!-- <div *ngIf="filteredWords.length > 0" class="center"> -->
+<div class="center">
   <mat-card class="chips-card">
-    <mat-card-subtitle>Filtered Suggestions</mat-card-subtitle>
+    <mat-card-subtitle>Filtered Suggestions: Nouns</mat-card-subtitle>
     <mat-card-content>
       <mat-chip-list aria-label="Fish selection">
         <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{
@@ -38,6 +39,19 @@
   </mat-card>
 </div>
 
+<div class="center">
+  <mat-card class="chips-card">
+    <mat-card-subtitle>Filtered Suggestions: Verbs</mat-card-subtitle>
+    <mat-card-content>
+      <mat-chip-list aria-label="Fish selection">
+        <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{
+          word
+          }}</mat-chip>
+      </mat-chip-list>
+    </mat-card-content>
+  </mat-card>
+</div>
+</div>
 <footer class="footer">
   <p>
     Created by:

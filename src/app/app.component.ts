@@ -22,7 +22,8 @@ export class AppComponent {
       .subscribe((data) => {
         this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
       });
-      console.log(environment.ping);
+      this.filteredWordsOrignal = ['crazy', 'happy', 'arise', 'above', 'great', 'prize', 'darling', 'red', 'blue', 'dog'];
+
   }
   title = 'WordleHelper';
   filteredWordsOrignal: string[] = [];
@@ -149,6 +150,8 @@ export class AppComponent {
         (letter) => !letter.includes(excludedLetter[i])
       );
     }
+
+    this.filteredWords = this.filteredWordsOrignal;
   }
   getDots(count:number): string{
     if(count == 0){
