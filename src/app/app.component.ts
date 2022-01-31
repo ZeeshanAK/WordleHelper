@@ -22,7 +22,7 @@ export class AppComponent {
       .subscribe((data) => {
         this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
       });
-      this.filteredWordsOrignal = ['crazy', 'happy', 'arise', 'above', 'great', 'prize', 'darling', 'red', 'blue', 'dog'];
+      // this.filteredWordsOrignal = ['crazy', 'happy', 'arise', 'above', 'great', 'prize', 'darling', 'red', 'blue', 'dog'];
 
   }
   title = 'WordleHelper';
@@ -151,7 +151,7 @@ export class AppComponent {
       );
     }
 
-    this.filteredWords = this.filteredWordsOrignal;
+    // this.filteredWords = this.filteredWordsOrignal;
   }
   getDots(count:number): string{
     if(count == 0){
