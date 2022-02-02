@@ -12,50 +12,78 @@
 <p>
   <mat-form-field appearance="outline">
     <mat-label>Enter you word here</mat-label>
-    <input [(ngModel)]="letter" (input)="CreateLetters($event)" matInput placeholder="CRAZY" />
+    <input
+      [(ngModel)]="letter"
+      (input)="CreateLetters($event)"
+      matInput
+      placeholder="CRAZY"
+    />
   </mat-form-field>
 </p>
 
 <div *ngIf="letters.length > 0" class="center">
   <mat-card class="chips-card letter">
     <mat-chip-list aria-label="Fish selection">
-      <mat-chip [attr.data-color]="colors[0]" class="no-wrap mat-chip-dark" (click)="changeColor($event, i)"
-        *ngFor="let word of letters; let i = index">{{ word.letter }}</mat-chip>
+      <mat-chip
+        [attr.data-color]="colors[0]"
+        class="no-wrap mat-chip-dark"
+        (click)="changeColor($event, i)"
+        *ngFor="let word of letters; let i = index"
+        >{{ word.letter }}</mat-chip
+      >
     </mat-chip-list>
   </mat-card>
 </div>
 <div class="center">
-<!-- <div *ngIf="filteredWords.length > 0" class="center"> -->
-<div class="center">
-  <mat-card class="chips-card">
-    <mat-card-subtitle>Filtered Suggestions: Nouns</mat-card-subtitle>
-    <mat-card-content>
-      <mat-chip-list aria-label="Fish selection">
-        <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{
-          word
+  <div *ngIf="filteredNouns.length > 0" class="center">
+    <mat-card class="chips-card">
+      <mat-card-subtitle>Filtered Suggestions: Nouns</mat-card-subtitle>
+      <mat-card-content>
+        <mat-chip-list aria-label="Fish selection">
+          <mat-chip class="no-wrap" *ngFor="let word of filteredNouns">{{
+            word
           }}</mat-chip>
-      </mat-chip-list>
-    </mat-card-content>
-  </mat-card>
-</div>
+        </mat-chip-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-<div class="center">
-  <mat-card class="chips-card">
-    <mat-card-subtitle>Filtered Suggestions: Verbs</mat-card-subtitle>
-    <mat-card-content>
-      <mat-chip-list aria-label="Fish selection">
-        <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{
-          word
+  <div *ngIf="filteredVerbs.length > 0" class="center">
+    <mat-card class="chips-card">
+      <mat-card-subtitle>Filtered Suggestions: Verbs</mat-card-subtitle>
+      <mat-card-content>
+        <mat-chip-list aria-label="Fish selection">
+          <mat-chip class="no-wrap" *ngFor="let word of filteredVerbs">{{
+            word
           }}</mat-chip>
-      </mat-chip-list>
-    </mat-card-content>
-  </mat-card>
-</div>
+        </mat-chip-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="filteredWords.length > 0" class="center">
+    <mat-card class="chips-card">
+      <mat-card-subtitle>Filtered Suggestions: All words</mat-card-subtitle>
+      <mat-card-content>
+        <mat-chip-list aria-label="Fish selection">
+          <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{
+            word
+          }}</mat-chip>
+        </mat-chip-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
 <footer class="footer">
   <p>
     Created by:
-    <a href="https://twitter.com/ZeeshanAK" target="_blank">ZeeshanAK</a>. Read about it <a href="https://twitter.com/ZeeshanAK/status/1484109102150307849" target="_blank">here.</a>
+    <a href="https://twitter.com/ZeeshanAK" target="_blank">ZeeshanAK</a>. Read
+    about it
+    <a
+      href="https://twitter.com/ZeeshanAK/status/1484109102150307849"
+      target="_blank"
+      >here.</a
+    >
   </p>
   <p>
     <strong>Attention: </strong>This page is a work in progress. There will be

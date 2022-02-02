@@ -22,12 +22,27 @@ export class AppComponent {
       .subscribe((data) => {
         this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
       });
-      this.filteredWordsOrignal = ['crazy', 'happy', 'arise', 'above', 'great', 'prize', 'darling', 'red', 'blue', 'dog'];
+      
+      this.http.get('assets/top_english_nouns_lower_500000.txt', { responseType: 'text' as 'json' })
+      .subscribe((data) => {
+        this.nounsOrignal = (<string>data).split(/\r?\n/);
+      });
+      this.http.get('assets/top_english_verbs_lower_100000.txt', { responseType: 'text' as 'json' })
+      .subscribe((data) => {
+        this.verbsOrignal = (<string>data).split(/\r?\n/);
+      });
+      //this.filteredWordsOrignal = ['crazy', 'happy', 'arise', 'above', 'great', 'prize', 'darling', 'red', 'blue', 'dog'];
 
   }
   title = 'WordleHelper';
   filteredWordsOrignal: string[] = [];
   filteredWords: string[] = [];
+  
+  nounsOrignal: string[] = [];
+  filteredNouns: string[] = [];
+  
+  verbsOrignal: string[] = [];
+  filteredVerbs: string[] = [];
 
   letters: Letters[] = [];
   letter: string = '';
@@ -68,6 +83,8 @@ export class AppComponent {
         break;
     }
     this.filteredWords = this.filteredWordsOrignal;
+    this.filteredNouns = this.nounsOrignal;
+    this.filteredVerbs = this.verbsOrignal;
 
     // 1st filter - get only those letter whose length matches with what user typed
     this.filteredWords = this.filteredWords.filter(
@@ -151,7 +168,34 @@ export class AppComponent {
       );
     }
 
-    this.filteredWords = this.filteredWordsOrignal;
+   // this.filteredWords = this.filteredWordsOrignal;
+
+    //for nouns
+    this.filteredNouns = this.nounsOrignal.filter(
+      (letter) => letter.length == this.letter.length
+    );
+
+    this.filteredNouns = this.filteredNouns.filter((letter) => yellos.test(letter));
+    this.filteredNouns = this.filteredNouns.filter((letter) => re.test(letter));
+    for (var i = 0; i < excludedLetter.length; i++) {
+      this.filteredNouns = this.filteredNouns.filter(
+        (letter) => !letter.includes(excludedLetter[i])
+      );
+    }
+
+    //for verbs
+    this.filteredVerbs = this.verbsOrignal.filter(
+      (letter) => letter.length == this.letter.length
+    );
+
+    this.filteredVerbs = this.filteredVerbs.filter((letter) => yellos.test(letter));
+    this.filteredVerbs = this.filteredVerbs.filter((letter) => re.test(letter));
+    for (var i = 0; i < excludedLetter.length; i++) {
+      this.filteredVerbs = this.filteredVerbs.filter(
+        (letter) => !letter.includes(excludedLetter[i])
+      );
+    }
+
   }
   getDots(count:number): string{
     if(count == 0){

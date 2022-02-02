@@ -19,7 +19,10 @@ p {
   max-width: 600px;
   max-height: 250px;
   overflow: auto;
+  margin-right: 25px;
+    margin-left: 25px;
 }
+
 .center {
   display: flex;
   justify-content: center;
