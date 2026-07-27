@@ -1,54 +1,252 @@
-h1,
-div.inputBox,
-p {
-  text-align: center;
-  margin-top: 15px;
+/* Container and Layout */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.tile {
-  color: black;
-  border: 2px solid;
-  font-size: 20px;
-  font-weight: bold;
-  text-transform: uppercase;
+/* Header Styles */
+.header {
   text-align: center;
-  margin: 8px;
+  margin-bottom: 30px;
 }
 
-.chips-card {
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  font-size: 1.1rem;
   max-width: 600px;
-  max-height: 250px;
-  overflow: auto;
+  margin: 0 auto;
+  line-height: 1.6;
 }
-.center {
+
+/* Legend Styles */
+.legend {
   display: flex;
   justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.legend-item {
+  display: flex;
   align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #555;
 }
 
-.letter {
-  margin-bottom: 50px;
+.chip-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: inline-block;
 }
 
-.footer {
-  position: fixed;
-  text-align: center;
-  bottom: 0px;
+/* Input Section */
+.input-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.word-input {
   width: 100%;
-  margin-bottom: auto;
+  max-width: 400px;
+}
+
+/* Letter Chips Section */
+.letter-chips-section {
+  margin-bottom: 30px;
+}
+
+.letter-chips {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+/* Chip Styles */
+.mat-chip {
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 1rem;
+  height: 40px;
+  min-width: 40px;
+}
+
+.mat-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .mat-chip-green {
-  background-color: #15cf15;
-  color: #fff;
+  background-color: #15cf15 !important;
+  color: #fff !important;
 }
 
 .mat-chip-yellow {
-  background-color: #ffc107;
-  color: #fff;
+  background-color: #ffc107 !important;
+  color: #fff !important;
 }
 
 .mat-chip-dark {
-  background-color: #7a7474;
-  color: #fff;
+  background-color: #7a7474 !important;
+  color: #fff !important;
+}
+
+/* Results Section */
+.results-section {
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.results-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.results-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.result-chip {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+  cursor: default !important;
+}
+
+.count-badge {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.more-results {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-top: 15px;
+}
+
+/* Loading Section */
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #7f8c8d;
+}
+
+.loading-section p {
+  margin-top: 15px;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+}
+
+.no-results mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #bdc3c7;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: auto;
+  border-top: 1px solid #ecf0f1;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.disclaimer {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #95a5a6;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .legend {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .results-grid {
+    max-height: 300px;
+  }
+}
+
+/* Scrollbar Styling */
+.results-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.results-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.results-grid::-webkit-scrollbar-thumb {
+  background: #bdc3c7;
+  border-radius: 4px;
+}
+
+.results-grid::-webkit-scrollbar-thumb:hover {
+  background: #95a5a6;
 }

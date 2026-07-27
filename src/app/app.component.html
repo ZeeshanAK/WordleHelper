@@ -1,63 +1,99 @@
-<h1>Wordle Helper</h1>
-<p>
-  Enter letters to get suggestions for Words by clicking on individual letter
-  to change its color
-</p>
-<p>
-  <span class="mat-chip-green">Green</span> = Correct letter, correct spot |
-  <span class="mat-chip-yellow">Yellow</span> = Correct letter, wrong spot |
-  <span class="mat-chip-dark">Grey</span> = Wrong letter
-</p>
+<div class="container">
+  <header class="header">
+    <h1>Wordle Helper</h1>
+    <p class="subtitle">Enter your guess and click on letters to mark them as correct (green), present (yellow), or absent (gray)</p>
+  </header>
 
-<p>
-  <mat-form-field appearance="outline">
-    <mat-label>Enter you word here</mat-label>
-    <input [(ngModel)]="letter" (input)="CreateLetters($event)" matInput placeholder="CRAZY" />
-  </mat-form-field>
-</p>
+  <div class="legend">
+    <span class="legend-item">
+      <span class="chip-preview mat-chip-green"></span> Correct letter & position
+    </span>
+    <span class="legend-item">
+      <span class="chip-preview mat-chip-yellow"></span> Correct letter, wrong position
+    </span>
+    <span class="legend-item">
+      <span class="chip-preview mat-chip-dark"></span> Letter not in word
+    </span>
+  </div>
 
-<div *ngIf="letters.length > 0" class="center">
-  <mat-card class="chips-card letter">
-    <mat-chip-list aria-label="Fish selection">
-      <mat-chip [attr.data-color]="colors[0]" class="no-wrap mat-chip-dark" (click)="changeColor($event, i)"
-        *ngFor="let word of letters; let i = index">{{ word.letter }}</mat-chip>
-    </mat-chip-list>
-  </mat-card>
+  <div class="input-section">
+    <mat-form-field appearance="outline" class="word-input">
+      <mat-label>Enter your 5-letter guess</mat-label>
+      <input 
+        [(ngModel)]="letter" 
+        (input)="CreateLetters($event)" 
+        matInput 
+        placeholder="e.g., CRAZY" 
+        maxlength="5"
+        autocomplete="off"
+        #wordInput
+      />
+      <mat-hint>Only letters A-Z allowed</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="letters.length > 0" class="letter-chips-section">
+    <mat-card class="chips-card letter-chips">
+      <mat-card-subtitle>Your Guess</mat-card-subtitle>
+      <mat-card-content>
+        <div class="chips-container">
+          <mat-chip 
+            [attr.data-color]="colors[0]" 
+            class="chip no-wrap mat-chip-dark" 
+            (click)="changeColor($event, i)"
+            *ngFor="let word of letters; let i = index"
+            [class.mat-chip-green]="word.color === 'green'"
+            [class.mat-chip-yellow]="word.color === 'yellow'"
+            [class.mat-chip-dark]="word.color === 'dark'"
+          >
+            {{ word.letter | uppercase }}
+          </mat-chip>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="filteredWordsOrignal.length === 0 && !isLoading" class="loading-section">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading word list...</p>
+  </div>
+
+  <div *ngIf="filteredWords.length > 0 && filteredWordsOrignal.length > 0" class="results-section">
+    <mat-card class="chips-card results-card">
+      <mat-card-header>
+        <mat-card-subtitle>
+          Filtered Suggestions 
+          <span class="count-badge">{{ filteredWords.length }} words</span>
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="results-grid">
+          <mat-chip 
+            class="result-chip" 
+            *ngFor="let word of filteredWords | slice:0:100"
+          >
+            {{ word }}
+          </mat-chip>
+        </div>
+        <p *ngIf="filteredWords.length > 100" class="more-results">
+          Showing first 100 of {{ filteredWords.length }} results
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="filteredWords.length === 0 && letters.length > 0 && filteredWordsOrignal.length > 0" class="no-results">
+    <mat-icon>sentiment_dissatisfied</mat-icon>
+    <p>No matching words found. Try adjusting your letter colors.</p>
+  </div>
+
+  <footer class="footer">
+    <p>
+      Created by: <a href="https://twitter.com/ZeeshanAK" target="_blank" rel="noopener">ZeeshanAK</a>. 
+      Read about it <a href="https://twitter.com/ZeeshanAK/status/1484109102150307849" target="_blank" rel="noopener">here.</a>
+    </p>
+    <p class="disclaimer">
+      <strong>Note:</strong> This is a work in progress. There may be bugs or incomplete functionality.
+    </p>
+  </footer>
 </div>
-<div class="center">
-<div *ngIf="filteredWords.length > 0" class="center">
-  <mat-card class="chips-card">
-    <mat-card-subtitle>Filtered Suggestions</mat-card-subtitle>
-    <mat-card-content>
-      <mat-chip-list aria-label="Fish selection">
-        <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{
-          word
-          }}</mat-chip>
-      </mat-chip-list>
-    </mat-card-content>
-  </mat-card>
-</div>
-<!-- 
-<div class="center">
-  <mat-card class="chips-card">
-    <mat-card-subtitle>Filtered Suggestions: Verbs</mat-card-subtitle>
-    <mat-card-content>
-      <mat-chip-list aria-label="Fish selection">
-        <mat-chip class="no-wrap" *ngFor="let word of filteredWords">{{
-          word
-          }}</mat-chip>
-      </mat-chip-list>
-    </mat-card-content>
-  </mat-card>
-</div>
-</div> -->
-<footer class="footer">
-  <p>
-    Created by:
-    <a href="https://twitter.com/ZeeshanAK" target="_blank">ZeeshanAK</a>. Read about it <a href="https://twitter.com/ZeeshanAK/status/1484109102150307849" target="_blank">here.</a>
-  </p>
-  <p>
-    <strong>Attention: </strong>This page is a work in progress. There will be
-    bugs, incomplete functionality and content may change frequently!
-  </p>
-</footer>
