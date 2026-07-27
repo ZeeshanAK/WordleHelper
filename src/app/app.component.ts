@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { Notyf } from 'notyf';
 import { NOTYF } from './notyf.token';
 import { environment } from 'src/environments/environment';
-import { domainToASCII } from 'url';
 
 @Component({
   selector: 'app-root',
@@ -13,18 +12,71 @@ import { domainToASCII } from 'url';
 })
 export class AppComponent {
   constructor(private http: HttpClient, @Inject(NOTYF) private notyf: Notyf) {}
+  
+  // Wordle uses 5-letter words
+  readonly WORD_LENGTH = 5;
+  
+  // Official Wordle word lists (subset for demonstration - in production, use full lists)
+  // These are common Wordle answers and valid guesses
+  private wordleAnswers: string[] = [
+    'cigar', 'rebut', 'sissy', 'humph', 'awake', 'blush', 'focal', 'evade', 'naval', 'serve',
+    'heath', 'dwarf', 'model', 'karma', 'stink', 'grade', 'quiet', 'bench', 'abate', 'feign',
+    'major', 'death', 'fresh', 'crust', 'stool', 'colon', 'abase', 'marry', 'react', 'batty',
+    'pride', 'floss', 'helix', 'croak', 'staff', 'paper', 'unfed', 'whelp', 'trawl', 'outdo',
+    'adobe', 'crazy', 'sower', 'repay', 'digit', 'crate', 'cluck', 'spike', 'mimic', 'pound',
+    'maxim', 'linen', 'unmet', 'flesh', 'booby', 'forth', 'first', 'stand', 'belly', 'ivory',
+    'seedy', 'print', 'yearn', 'drain', 'bribe', 'stout', 'panel', 'crass', 'flume', 'offal',
+    'agree', 'error', 'swirl', 'argue', 'bleed', 'delta', 'flick', 'totem', 'wooer', 'front',
+    'shrub', 'parry', 'biome', 'lapel', 'start', 'greet', 'goner', 'goody', 'frown', 'jovial',
+    'royal', 'viral', 'tense', 'plank', 'crape', 'crowd', 'whack', 'mount', 'perky', 'could',
+    'wrung', 'light', 'those', 'moist', 'shard', 'pleat', 'aloft', 'skill', 'elder', 'frame',
+    'humor', 'pause', 'ulcer', 'ultra', 'robin', 'cynic', 'aroma', 'caulk', 'shake', 'pupal',
+    'dodge', 'swill', 'tacit', 'other', 'thorn', 'trove', 'bloke', 'vivid', 'spill', 'chant',
+    'choke', 'rupee', 'nasty', 'mourn', 'ahead', 'brine', 'cloth', 'hoard', 'sweet', 'month',
+    'lapse', 'watch', 'today', 'focus', 'smelt', 'tease', 'cater', 'movie', 'saute', 'allow',
+    'renew', 'their', 'slosh', 'purge', 'chest', 'depot', 'epoxy', 'nymph', 'found', 'shall',
+    'harry', 'stove', 'lowly', 'snout', 'trope', 'fewer', 'shawl', 'natal', 'comma', 'foray',
+    'scare', 'stair', 'black', 'squad', 'royal', 'chunk', 'mince', 'shame', 'cheek', 'ample',
+    'flair', 'foyer', 'cargo', 'oxide', 'plant', 'olive', 'inert', 'askew', 'heist', 'shown',
+    'zesty', 'trash', 'larva', 'forgo', 'story', 'hairy', 'train', 'homer', 'badge', 'midst',
+    'canny', 'shine', 'gecko', 'farce', 'slung', 'tipsy', 'metal', 'yield', 'delve', 'being',
+    'scour', 'glass', 'gamer', 'scrap', 'money', 'hinge', 'album', 'vouch', 'asset', 'tiara',
+    'crept', 'bayou', 'atoll', 'manor', 'creak', 'showy', 'phase', 'froth', 'depth', 'gloom',
+    'flood', 'trait', 'girth', 'piety', 'goose', 'float', 'donor', 'atone', 'primo', 'apron',
+    'blown', 'cacao', 'loser', 'input', 'gloat', 'awful', 'brink', 'smite', 'beady', 'rusty',
+    'retro', 'droll', 'gawky', 'hutch', 'pinto', 'egret', 'lilac', 'sever', 'field', 'fluff',
+    'agape', 'voice', 'stead', 'berth', 'madam', 'night', 'bland', 'liver', 'wedge', 'roomy',
+    'wacky', 'flock', 'angry', 'trite', 'aphid', 'tryst', 'midge', 'power', 'elope', 'cinch',
+    'motto', 'stomp', 'upset', 'bluff', 'cramp', 'quart', 'coyly', 'youth', 'rhyme', 'buggy',
+    'alien', 'smear', 'unfit', 'patty', 'cling', 'glean', 'label', 'hunky', 'khaki', 'poker',
+    'gruel', 'twice', 'twang', 'shrug', 'treat', 'waste', 'merit', 'woven', 'needy', 'clump',
+    'sonic', 'cashy', 'theme', 'downy', 'knead', 'quirk', 'rapid', 'bugle', 'deity',
+    'tepid', 'arise', 'tutor', 'abode', 'corps', 'swath', 'crash', 'groan', 'aisle',
+    'bacon', 'array', 'paler', 'aorta', 'adult', 'judge', 'rower', 'artsy', 'rural', 'shave'
+  ];
+
   ngOnInit(): void {
+    // Try to load extended word list from external source for more suggestions
     this.http
       .get(
         'https://raw.githubusercontent.com/ZeeshanAK/english-words/master/words_alpha.txt',
         { responseType: 'text' as 'json' }
       )
-      .subscribe((data) => {
-        this.filteredWordsOrignal = (<string>data).split(/\r?\n/);
+      .subscribe({
+        next: (data) => {
+          const allWords = (<string>data).split(/\r?\n/);
+          // Filter to only 5-letter words and combine with Wordle answers
+          const fiveLetterWords = allWords.filter(word => word.length === this.WORD_LENGTH && /^[a-z]+$/.test(word));
+          // Combine and deduplicate
+          this.filteredWordsOrignal = [...new Set([...this.wordleAnswers, ...fiveLetterWords])].sort();
+        },
+        error: (err) => {
+          console.warn('Could not fetch extended word list, using built-in list');
+          this.filteredWordsOrignal = [...this.wordleAnswers].sort();
+        }
       });
-      // this.filteredWordsOrignal = ['crazy', 'happy', 'arise', 'above', 'great', 'prize', 'darling', 'red', 'blue', 'dog'];
-
   }
+  
   title = 'WordleHelper';
   filteredWordsOrignal: string[] = [];
   filteredWords: string[] = [];
@@ -32,12 +84,18 @@ export class AppComponent {
   letters: Letters[] = [];
   letter: string = '';
   colors = ['dark', 'yellow', 'green'];
+  isLoading = true;
 
   CreateLetters(el: any): void {
     this.letters = [];
-    [...this.letter].forEach((element) => {
-      this.letters.push(new Letters(element, 'dark'));
+    [...this.letter.toLowerCase()].forEach((element) => {
+      // Only allow alphabetic characters
+      if (/[a-z]/.test(element)) {
+        this.letters.push(new Letters(element, 'dark'));
+      }
     });
+    // Reset filtered words when input changes
+    this.filteredWords = this.filteredWordsOrignal;
   }
 
   changeColor(el: any, index: number): void {
@@ -67,100 +125,60 @@ export class AppComponent {
         el.currentTarget.classList.remove('mat-chip-yellow');
         break;
     }
-    this.filteredWords = this.filteredWordsOrignal;
+    
+    this.filterWords();
+  }
 
-    // 1st filter - get only those letter whose length matches with what user typed
-    this.filteredWords = this.filteredWords.filter(
-      (letter) => letter.length == this.letter.length
+  filterWords(): void {
+    // Start with all words of the correct length
+    this.filteredWords = this.filteredWordsOrignal.filter(
+      (word) => word.length === this.letter.length
     );
 
-    // 2nd filter apply regex for Green and yellow letters
-    let yellowString: string = '';
-    let regString: string = '';
-    // [...this.letters].forEach((element) => {
-    //   if (element.color == 'green') {
-    //     regString += element.letter;
-    //   } else if (element.color == 'yellow') {
-    //     regString += '\\w';
-    //   }
-    // });
+    // Separate letters by color
+    const greenLetters = this.letters.filter(l => l.color === 'green');
+    const yellowLetters = this.letters.filter(l => l.color === 'yellow');
+    const darkLetters = this.letters.filter(l => l.color === 'dark');
 
-    //filter 2a
+    // Filter 1: Green letters - must be at exact position
+    this.letters.forEach((letterObj, position) => {
+      if (letterObj.color === 'green') {
+        this.filteredWords = this.filteredWords.filter(
+          (word) => word[position] === letterObj.letter
+        );
+      }
+    });
 
-    let yellowLetters = this.letters
-      .filter(function (el) {
-        return el.color == 'yellow';
-      })
-      .map((a) => a.letter);
-    let greenLetters = this.letters
-      .filter(function (el) {
-        return el.color == 'green';
-      })
-      .map((a) => a.letter);
+    // Filter 2: Yellow letters - must exist in word but NOT at the marked position
+    this.letters.forEach((letterObj, position) => {
+      if (letterObj.color === 'yellow') {
+        this.filteredWords = this.filteredWords.filter(
+          (word) => 
+            word.includes(letterObj.letter) && 
+            word[position] !== letterObj.letter
+        );
+      }
+    });
 
-      [...yellowLetters].forEach((element) => yellowString += `(?=.*${element})`);
- // [...this.letters].forEach((element) => {
-    //   if (element.color == 'green') {
-    //     regString += element.letter;
-    //   } else if (element.color == 'yellow') {
-    //     regString += '\\w';
-    //   }
-    // });
-
-
-      yellowString += '.+'
-
-
-      let yellos = new RegExp(yellowString);
-
-      this.filteredWords = this.filteredWords.filter((letter) => yellos.test(letter));
-
-
-    for(let i = 0; i <this.letters.length; i++ ){
-      if (this.letters[i].color == 'green') {
-        if(((i -1) >=0) &&  this.letters[i].color == 'green'){
-          regString += `${this.letters[i].letter}`;
-        } else{
-          regString += `${this.getDots(i)}${this.letters[i].letter}`;
+    // Filter 3: Dark letters - should not exist in word UNLESS they are also marked green/yellow elsewhere
+    this.letters.forEach((letterObj, position) => {
+      if (letterObj.color === 'dark') {
+        const isAlsoGreenOrYellow = this.letters.some(
+          (l, i) => l.letter === letterObj.letter && l.color !== 'dark' && i !== position
+        );
+        
+        if (!isAlsoGreenOrYellow) {
+          // Letter is not in the word at all
+          this.filteredWords = this.filteredWords.filter(
+            (word) => !word.includes(letterObj.letter)
+          );
+        } else {
+          // Letter exists elsewhere as green/yellow, just exclude this position
+          this.filteredWords = this.filteredWords.filter(
+            (word) => word[position] !== letterObj.letter
+          );
         }
-      } 
-      // else if (this.letters[i].color == 'yellow') {
-      //   if(((i -1) >=0) &&  this.letters[i].color == 'yellow'){
-      //     regString += `${this.letters[i].letter}`;
-      //   } else{
-      //     regString += `${this.getDots(i)}${this.letters[i].letter}`;
-      //   }
-
-      // }
-    }
-
-    let re = new RegExp(regString);
-
-    this.filteredWords = this.filteredWords.filter((letter) => re.test(letter));
-
-    // 3rd  filter - Exclude words that shouldn't contain x y z letters
-    let excludedLetter = this.letters
-      .filter(function (el) {
-        return el.color == 'dark';
-      })
-      .map((a) => a.letter);
-
-    for (var i = 0; i < excludedLetter.length; i++) {
-      this.filteredWords = this.filteredWords.filter(
-        (letter) => !letter.includes(excludedLetter[i])
-      );
-    }
-
-    // this.filteredWords = this.filteredWordsOrignal;
-  }
-  getDots(count:number): string{
-    if(count == 0){
-      return '^'
-    }
-     let dots: string = '';
-    for (var i = 0; i < count; i++) {
-      dots += '.';
-    }
-    return dots;
+      }
+    });
   }
 }

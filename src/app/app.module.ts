@@ -7,6 +7,7 @@ import { MaterialModules } from './material.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NOTYF, notyfFactory } from './notyf.token';
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { NOTYF, notyfFactory } from './notyf.token';
     HttpClientModule,
     FormsModule,
     MaterialModules,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    CommonModule
   ],
   providers: [
     { provide: NOTYF, useFactory: notyfFactory }
