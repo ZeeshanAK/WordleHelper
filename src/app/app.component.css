@@ -56,6 +56,106 @@
   display: inline-block;
 }
 
+/* Wordle Grid Section */
+.wordle-grid-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.wordle-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.word-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter-box {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.letter-box input {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #d3d6da;
+  border-radius: 4px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.letter-box input:focus {
+  border-color: #1976d2;
+}
+
+.letter-box.filled input {
+  border-color: #888;
+}
+
+.letter-box.submitted input {
+  display: none;
+}
+
+.color-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-indicator:hover {
+  transform: scale(1.05);
+}
+
+.clear-row-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: #7f8c8d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.clear-row-btn:hover {
+  color: #e74c3c;
+}
+
+.grid-hint {
+  margin-top: 15px;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 /* Input Section */
 .input-section {
   display: flex;
@@ -93,6 +193,10 @@
   font-size: 1rem;
   height: 40px;
   min-width: 40px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 12px !important;
 }
 
 .mat-chip:hover {
@@ -138,6 +242,10 @@
   background-color: #e3f2fd !important;
   color: #1976d2 !important;
   cursor: default !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 16px !important;
 }
 
 .count-badge {
@@ -229,6 +337,16 @@
 
   .results-grid {
     max-height: 300px;
+  }
+
+  .letter-box {
+    width: 40px;
+    height: 40px;
+  }
+
+  .letter-box input,
+  .color-indicator {
+    font-size: 1.2rem;
   }
 }
 
