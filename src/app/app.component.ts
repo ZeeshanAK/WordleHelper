@@ -120,15 +120,22 @@ export class AppComponent {
     if (event.key === 'Backspace') {
       if (letterIndex > 0 && this.rows[rowIndex].letters[letterIndex].letter === '') {
         this.rows[rowIndex].letters[letterIndex - 1].letter = '';
+        // Move focus to previous box
+        const prevInput = document.getElementById(`letter-${rowIndex}-${letterIndex - 1}`);
+        if (prevInput) {
+          prevInput.focus();
+        }
       } else {
         this.rows[rowIndex].letters[letterIndex].letter = '';
       }
+      event.preventDefault();
       return;
     }
     
     // Handle Enter - submit the word
     if (event.key === 'Enter') {
       this.submitRow(rowIndex);
+      event.preventDefault();
       return;
     }
     
@@ -139,6 +146,9 @@ export class AppComponent {
     
     // Add the letter
     this.rows[rowIndex].letters[letterIndex].letter = key;
+    
+    // Prevent default to stop the character from being inserted again
+    event.preventDefault();
     
     // Move to next box if not last
     if (letterIndex < this.WORD_LENGTH - 1) {
