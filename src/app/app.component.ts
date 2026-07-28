@@ -5,6 +5,11 @@ import { Notyf } from 'notyf';
 import { NOTYF } from './notyf.token';
 import { environment } from 'src/environments/environment';
 
+interface WordRow {
+  letters: Letters[];
+  submitted: boolean;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,8 +18,9 @@ import { environment } from 'src/environments/environment';
 export class AppComponent {
   constructor(private http: HttpClient, @Inject(NOTYF) private notyf: Notyf) {}
   
-  // Wordle uses 5-letter words
+  // Wordle uses 5-letter words and 6 guesses
   readonly WORD_LENGTH = 5;
+  readonly MAX_ROWS = 6;
   
   // Official Wordle word lists (subset for demonstration - in production, use full lists)
   // These are common Wordle answers and valid guesses
@@ -75,30 +81,116 @@ export class AppComponent {
           this.filteredWordsOrignal = [...this.wordleAnswers].sort();
         }
       });
+    
+    // Initialize empty rows
+    this.initializeRows();
   }
   
   title = 'WordleHelper';
   filteredWordsOrignal: string[] = [];
   filteredWords: string[] = [];
 
-  letters: Letters[] = [];
-  letter: string = '';
+  rows: WordRow[] = [];
   colors = ['dark', 'yellow', 'green'];
   isLoading = true;
-
-  CreateLetters(el: any): void {
-    this.letters = [];
-    [...this.letter.toLowerCase()].forEach((element) => {
-      // Only allow alphabetic characters
-      if (/[a-z]/.test(element)) {
-        this.letters.push(new Letters(element, 'dark'));
-      }
-    });
-    // Reset filtered words when input changes
-    this.filteredWords = this.filteredWordsOrignal;
+  
+  initializeRows(): void {
+    this.rows = [];
+    for (let i = 0; i < this.MAX_ROWS; i++) {
+      this.rows.push({
+        letters: Array(this.WORD_LENGTH).fill(null).map(() => new Letters('', 'dark')),
+        submitted: false
+      });
+    }
+  }
+  
+  get currentRow(): WordRow | null {
+    const row = this.rows.find(r => !r.submitted);
+    return row || null;
+  }
+  
+  get currentRowIndex(): number {
+    return this.rows.findIndex(r => !r.submitted);
   }
 
-  changeColor(el: any, index: number): void {
+  onKeyPress(event: KeyboardEvent, rowIndex: number, letterIndex: number): void {
+    const key = event.key.toLowerCase();
+    
+    // Handle backspace
+    if (event.key === 'Backspace') {
+      if (letterIndex > 0 && this.rows[rowIndex].letters[letterIndex].letter === '') {
+        this.rows[rowIndex].letters[letterIndex - 1].letter = '';
+      } else {
+        this.rows[rowIndex].letters[letterIndex].letter = '';
+      }
+      return;
+    }
+    
+    // Handle Enter - submit the word
+    if (event.key === 'Enter') {
+      this.submitRow(rowIndex);
+      return;
+    }
+    
+    // Only allow single alphabetic characters
+    if (!/^[a-z]$/.test(key)) {
+      return;
+    }
+    
+    // Add the letter
+    this.rows[rowIndex].letters[letterIndex].letter = key;
+    
+    // Move to next box if not last
+    if (letterIndex < this.WORD_LENGTH - 1) {
+      const nextInput = document.getElementById(`letter-${rowIndex}-${letterIndex + 1}`);
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
+  }
+  
+  submitRow(rowIndex: number): void {
+    const row = this.rows[rowIndex];
+    const word = row.letters.map(l => l.letter).join('');
+    
+    // Validate word length
+    if (word.length !== this.WORD_LENGTH) {
+      this.notyf.error(`Please enter a ${this.WORD_LENGTH}-letter word`);
+      return;
+    }
+    
+    // Mark row as submitted
+    row.submitted = true;
+    
+    // Filter words based on all submitted rows
+    this.filterWords();
+    
+    // Focus on next row's first input if available
+    if (rowIndex < this.MAX_ROWS - 1) {
+      setTimeout(() => {
+        const nextInput = document.getElementById(`letter-${rowIndex + 1}-0`);
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }, 100);
+    }
+  }
+  
+  clearRow(rowIndex: number): void {
+    this.rows[rowIndex].letters.forEach(l => l.letter = '');
+    this.rows[rowIndex].submitted = false;
+    this.filterWords();
+    
+    // Focus on first input of cleared row
+    setTimeout(() => {
+      const firstInput = document.getElementById(`letter-${rowIndex}-0`);
+      if (firstInput) {
+        firstInput.focus();
+      }
+    }, 100);
+  }
+
+  changeColor(el: any, rowIndex: number, letterIndex: number): void {
     if (this.filteredWordsOrignal.length == 0) {
       this.notyf.error(
         'Cannot fetch words right now. Please check back in a while. Thanks!'
@@ -106,21 +198,21 @@ export class AppComponent {
       return;
     }
 
-    let color = this.letters[index].color;
+    let color = this.rows[rowIndex].letters[letterIndex].color;
 
     switch (color) {
       case 'dark':
-        this.letters[index].color = 'green';
+        this.rows[rowIndex].letters[letterIndex].color = 'green';
         el.currentTarget.classList.add('mat-chip-green');
         el.currentTarget.classList.remove('mat-chip-dark');
         break;
       case 'green':
-        this.letters[index].color = 'yellow';
+        this.rows[rowIndex].letters[letterIndex].color = 'yellow';
         el.currentTarget.classList.add('mat-chip-yellow');
         el.currentTarget.classList.remove('mat-chip-green');
         break;
       case 'yellow':
-        this.letters[index].color = 'dark';
+        this.rows[rowIndex].letters[letterIndex].color = 'dark';
         el.currentTarget.classList.add('mat-chip-dark');
         el.currentTarget.classList.remove('mat-chip-yellow');
         break;
@@ -131,54 +223,58 @@ export class AppComponent {
 
   filterWords(): void {
     // Start with all words of the correct length
-    this.filteredWords = this.filteredWordsOrignal.filter(
-      (word) => word.length === this.letter.length
-    );
+    this.filteredWords = [...this.filteredWordsOrignal];
 
-    // Separate letters by color
-    const greenLetters = this.letters.filter(l => l.color === 'green');
-    const yellowLetters = this.letters.filter(l => l.color === 'yellow');
-    const darkLetters = this.letters.filter(l => l.color === 'dark');
+    // Collect all constraints from all submitted rows
+    const greenConstraints: { letter: string; position: number }[] = [];
+    const yellowConstraints: { letter: string; position: number }[] = [];
+    const darkConstraints: string[] = [];
+    const greenYellowLetters: Set<string> = new Set();
+
+    // Gather all constraints from submitted rows
+    this.rows.forEach(row => {
+      if (!row.submitted) return;
+      
+      row.letters.forEach((letterObj, position) => {
+        if (letterObj.letter === '') return;
+        
+        if (letterObj.color === 'green') {
+          greenConstraints.push({ letter: letterObj.letter, position });
+          greenYellowLetters.add(letterObj.letter);
+        } else if (letterObj.color === 'yellow') {
+          yellowConstraints.push({ letter: letterObj.letter, position });
+          greenYellowLetters.add(letterObj.letter);
+        } else if (letterObj.color === 'dark') {
+          // Only add to dark constraints if not marked green/yellow elsewhere
+          if (!greenYellowLetters.has(letterObj.letter)) {
+            darkConstraints.push(letterObj.letter);
+          }
+        }
+      });
+    });
 
     // Filter 1: Green letters - must be at exact position
-    this.letters.forEach((letterObj, position) => {
-      if (letterObj.color === 'green') {
-        this.filteredWords = this.filteredWords.filter(
-          (word) => word[position] === letterObj.letter
-        );
-      }
+    greenConstraints.forEach(constraint => {
+      this.filteredWords = this.filteredWords.filter(
+        (word) => word[constraint.position] === constraint.letter
+      );
     });
 
     // Filter 2: Yellow letters - must exist in word but NOT at the marked position
-    this.letters.forEach((letterObj, position) => {
-      if (letterObj.color === 'yellow') {
-        this.filteredWords = this.filteredWords.filter(
-          (word) => 
-            word.includes(letterObj.letter) && 
-            word[position] !== letterObj.letter
-        );
-      }
+    yellowConstraints.forEach(constraint => {
+      this.filteredWords = this.filteredWords.filter(
+        (word) => 
+          word.includes(constraint.letter) && 
+          word[constraint.position] !== constraint.letter
+      );
     });
 
-    // Filter 3: Dark letters - should not exist in word UNLESS they are also marked green/yellow elsewhere
-    this.letters.forEach((letterObj, position) => {
-      if (letterObj.color === 'dark') {
-        const isAlsoGreenOrYellow = this.letters.some(
-          (l, i) => l.letter === letterObj.letter && l.color !== 'dark' && i !== position
-        );
-        
-        if (!isAlsoGreenOrYellow) {
-          // Letter is not in the word at all
-          this.filteredWords = this.filteredWords.filter(
-            (word) => !word.includes(letterObj.letter)
-          );
-        } else {
-          // Letter exists elsewhere as green/yellow, just exclude this position
-          this.filteredWords = this.filteredWords.filter(
-            (word) => word[position] !== letterObj.letter
-          );
-        }
-      }
+    // Filter 3: Dark letters - should not exist in word (if not also green/yellow)
+    const uniqueDarkLetters = [...new Set(darkConstraints)];
+    uniqueDarkLetters.forEach(letter => {
+      this.filteredWords = this.filteredWords.filter(
+        (word) => !word.includes(letter)
+      );
     });
   }
 }

@@ -1,7 +1,7 @@
 <div class="container">
   <header class="header">
     <h1>Wordle Helper</h1>
-    <p class="subtitle">Enter your guess and click on letters to mark them as correct (green), present (yellow), or absent (gray)</p>
+    <p class="subtitle">Enter your guesses below. Click on letters to mark them as correct (green), present (yellow), or absent (gray)</p>
   </header>
 
   <div class="legend">
@@ -16,41 +16,38 @@
     </span>
   </div>
 
-  <div class="input-section">
-    <mat-form-field appearance="outline" class="word-input">
-      <mat-label>Enter your 5-letter guess</mat-label>
-      <input 
-        [(ngModel)]="letter" 
-        (input)="CreateLetters($event)" 
-        matInput 
-        placeholder="e.g., CRAZY" 
-        maxlength="5"
-        autocomplete="off"
-        #wordInput
-      />
-      <mat-hint>Only letters A-Z allowed</mat-hint>
-    </mat-form-field>
-  </div>
-
-  <div *ngIf="letters.length > 0" class="letter-chips-section">
-    <mat-card class="chips-card letter-chips">
-      <mat-card-subtitle>Your Guess</mat-card-subtitle>
-      <mat-card-content>
-        <div class="chips-container">
-          <mat-chip 
-            [attr.data-color]="colors[0]" 
-            class="chip no-wrap mat-chip-dark" 
-            (click)="changeColor($event, i)"
-            *ngFor="let word of letters; let i = index"
-            [class.mat-chip-green]="word.color === 'green'"
-            [class.mat-chip-yellow]="word.color === 'yellow'"
-            [class.mat-chip-dark]="word.color === 'dark'"
-          >
-            {{ word.letter | uppercase }}
-          </mat-chip>
+  <!-- Wordle-style grid for 6 guesses -->
+  <div class="wordle-grid-section">
+    <div class="wordle-grid">
+      <div *ngFor="let row of rows; let rowIndex = index" class="word-row">
+        <div *ngFor="let letterObj of row.letters; let letterIndex = index" 
+             class="letter-box"
+             [class.filled]="letterObj.letter !== ''"
+             [class.submitted]="row.submitted">
+          <input 
+            type="text"
+            [id]="'letter-' + rowIndex + '-' + letterIndex"
+            [value]="letterObj.letter | uppercase"
+            (keydown)="onKeyPress($event, rowIndex, letterIndex)"
+            maxlength="1"
+            autocomplete="off"
+            [readonly]="row.submitted"
+          />
+          <div *ngIf="row.submitted" 
+               class="color-indicator"
+               [class.mat-chip-green]="letterObj.color === 'green'"
+               [class.mat-chip-yellow]="letterObj.color === 'yellow'"
+               [class.mat-chip-dark]="letterObj.color === 'dark'"
+               (click)="changeColor($event, rowIndex, letterIndex)">
+            {{ letterObj.letter | uppercase }}
+          </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+        <button *ngIf="row.submitted" class="clear-row-btn" (click)="clearRow(rowIndex)" title="Clear this row">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <p class="grid-hint">Type a 5-letter word and press Enter to submit. Click on colored tiles to change their status.</p>
   </div>
 
   <div *ngIf="filteredWordsOrignal.length === 0 && !isLoading" class="loading-section">
@@ -82,7 +79,7 @@
     </mat-card>
   </div>
 
-  <div *ngIf="filteredWords.length === 0 && letters.length > 0 && filteredWordsOrignal.length > 0" class="no-results">
+  <div *ngIf="filteredWords.length === 0 && filteredWordsOrignal.length > 0" class="no-results">
     <mat-icon>sentiment_dissatisfied</mat-icon>
     <p>No matching words found. Try adjusting your letter colors.</p>
   </div>
